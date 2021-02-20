@@ -10,7 +10,6 @@ import {
 } from '../controllers/tourController';
 
 const router = new express.Router();
-console.log(`${__dirname}/../dev-data/data/tours-simple.json`);
 
 router.param('id', checkID);
 

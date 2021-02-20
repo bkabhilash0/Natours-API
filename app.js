@@ -1,4 +1,6 @@
 import express from 'express';
+import dotenv from 'dotenv';
+dotenv.config({ path: './config.env' });
 import path from 'path';
 import tourRouter from './routes/tourRoutes';
 import userRouter from './routes/userRoutes';
@@ -12,8 +14,11 @@ app.use((req, _res, next) => {
     req.requestTime = new Date().toISOString();
     next();
 });
+
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 app.use(express.json());
-app.use(morgan('dev'));
 app.use(express.static(STATIC_URL));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
