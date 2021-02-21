@@ -1,32 +1,37 @@
 {
-  "name": "natours-api",
-  "version": "1.0.0",
-  "description": "Learning Node-Express and MongoDB",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec babel-node server.js"
-  },
-  "author": "Abhilash BK",
-  "license": "ISC",
-  "dependencies": {
-    "@babel/core": "^7.12.17",
-    "@babel/node": "^7.12.17",
-    "@babel/preset-env": "^7.12.17",
-    "dotenv": "^8.2.0",
-    "eslint": "^7.20.0",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-prettier": "^7.2.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-react": "^7.22.0",
-    "express": "^4.17.1",
-    "morgan": "^1.10.0",
-    "prettier": "^2.2.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
-  }
+    "name": "natours-api",
+    "version": "1.0.0",
+    "description": "Learning Node-Express and MongoDB",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "nodemon --exec babel-node server.js",
+        "delete-db": "nodemon --exec babel-node dev-data/data/import-dev-data.js --delete",
+        "import-db": "nodemon --exec babel-node dev-data/data/import-dev-data.js --import",
+        "build": "babel app.js --out-file index-compiled.js",
+        "start": "node index-compiled.js"
+    },
+    "author": "Abhilash BK",
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^8.2.0",
+        "eslint": "^7.20.0",
+        "eslint-config-airbnb": "^18.2.1",
+        "eslint-config-prettier": "^7.2.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-jsx-a11y": "^6.4.1",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-prettier": "^3.3.1",
+        "eslint-plugin-react": "^7.22.0",
+        "express": "^4.17.1",
+        "mongoose": "^5.11.17",
+        "morgan": "^1.10.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.12.17",
+        "@babel/node": "^7.12.17",
+        "@babel/preset-env": "^7.12.17",
+        "nodemon": "^2.0.7",
+        "prettier": "^2.2.1"
+    }
 }
