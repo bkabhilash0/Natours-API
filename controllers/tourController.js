@@ -1,13 +1,22 @@
 import Tour from '../models/tourModel';
+import APIFeatures from '../utils/ApiFeatures';
+
+const aliasTours = (req, res, next) => {
+    req.query.limit = '5';
+    req.query.sort = '-ratingsAverage,price';
+    req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+    next();
+};
 
 const getAllTours = async (req, res) => {
     try {
-        const queryObjects = { ...req.query };
-        const excludedField = ['page', 'sort', 'limit', 'fields'];
-        excludedField.forEach((field) => delete queryObjects[field]);
-        console.log(req.query, queryObjects);
+        const features = new APIFeatures(Tour.find(), req.query)
+            .filter()
+            .sort()
+            .limitFields()
+            .paginate();
+        const tours = await features.query;
 
-        const tours = await Tour.find(queryObjects);
         res.status(200).json({
             status: 'success',
             requestedAt: req.requestTime,
@@ -20,6 +29,7 @@ const getAllTours = async (req, res) => {
         res.status(404).json({
             status: 'fail',
             message: 'Server Error',
+            error: error.message,
         });
     }
 };
@@ -93,4 +103,11 @@ const deleteTour = async (req, res) => {
     }
 };
 
-export { createTour, getAllTours, getSingleTour, updateTour, deleteTour };
+export {
+    createTour,
+    getAllTours,
+    getSingleTour,
+    updateTour,
+    deleteTour,
+    aliasTours,
+};
