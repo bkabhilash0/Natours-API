@@ -9,7 +9,8 @@
         "delete-db": "nodemon --exec babel-node dev-data/data/import-dev-data.js --delete",
         "import-db": "nodemon --exec babel-node dev-data/data/import-dev-data.js --import",
         "build": "babel app.js --out-file index-compiled.js",
-        "start": "node index-compiled.js"
+        "start": "node index-compiled.js",
+        "debug": "ndb server.js"
     },
     "author": "Abhilash BK",
     "license": "ISC",
@@ -32,6 +33,7 @@
         "@babel/core": "^7.12.17",
         "@babel/node": "^7.12.17",
         "@babel/preset-env": "^7.12.17",
+        "ndb": "^1.1.5",
         "nodemon": "^2.0.7",
         "prettier": "^2.2.1"
     }

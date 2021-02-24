@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config({ path: './config.env' });
 import path from 'path';
+import AppError from './utils/AppError';
+import globalErrorHandler from './controllers/errorController';
 import tourRouter from './routes/tourRoutes';
 import userRouter from './routes/userRoutes';
 import morgan from 'morgan';
@@ -22,5 +24,18 @@ app.use(express.json());
 app.use(express.static(STATIC_URL));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+
+// * 404 Middleware
+app.all('*', (req, res, next) => {
+    next(
+        new AppError(
+            `The Path ${req.originalUrl} is not found in this server`,
+            404
+        )
+    );
+});
+
+// * Error Handling Middleware.
+app.use(globalErrorHandler);
 
 export default app;
