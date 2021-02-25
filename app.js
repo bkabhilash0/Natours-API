@@ -1,6 +1,4 @@
 import express from 'express';
-import dotenv from 'dotenv';
-dotenv.config({ path: './config.env' });
 import path from 'path';
 import AppError from './utils/AppError';
 import globalErrorHandler from './controllers/errorController';
@@ -38,4 +36,4 @@ app.all('*', (req, res, next) => {
 // * Error Handling Middleware.
 app.use(globalErrorHandler);
 
-export default app;
+module.exports = app;
