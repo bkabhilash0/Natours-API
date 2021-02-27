@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Kindly provide a Valid Password'],
         minLength: [8, 'Password Must minimum be of 8 characters!'],
-        select: false
+        select: false,
     },
     passwordConfirm: {
         type: String,
@@ -36,6 +36,7 @@ const userSchema = new mongoose.Schema({
             message: "Passwords don't Match",
         },
     },
+    passwordChangedAt: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -47,9 +48,19 @@ userSchema.pre('save', async function (next) {
     next();
 });
 
-userSchema.methods.checkPassword = async(provided,original) => {
-    return await bcrypt.compare(provided,original);
-}
+userSchema.methods.checkPassword = async (provided, original) => {
+    return await bcrypt.compare(provided, original);
+};
+
+userSchema.methods.changedPasswordAfter = function (JWTTimeStamp) {
+    const user = this;
+    if (user.passwordChangedAt) {
+        const timeStamp = parseInt(user.passwordChangedAt.getTime() / 1000, 10);
+        console.log(timeStamp, JWTTimeStamp);
+        return JWTTimeStamp < timeStamp;
+    }
+    return false;
+};
 
 const User = mongoose.model('User', userSchema);
 
