@@ -1,5 +1,5 @@
 import express from 'express';
-import {auth} from '../controllers/authController';
+import { auth, restrictTo } from '../controllers/authController';
 import {
     createTour,
     getAllTours,
@@ -8,7 +8,7 @@ import {
     deleteTour,
     aliasTours,
     getToursData,
-    getMonthlyPlan
+    getMonthlyPlan,
 } from '../controllers/tourController';
 
 const router = new express.Router();
@@ -16,7 +16,11 @@ const router = new express.Router();
 router.route('/top-5-cheap').get(aliasTours, getAllTours);
 router.route('/tour-stats').get(getToursData);
 router.route('/monthly-plan/:year').get(getMonthlyPlan);
-router.route('/').get(auth,getAllTours).post(createTour);
-router.route('/:id').get(getSingleTour).patch(updateTour).delete(deleteTour);
+router.route('/').get(auth, getAllTours).post(createTour);
+router
+    .route('/:id')
+    .get(getSingleTour)
+    .patch(updateTour)
+    .delete(auth, restrictTo('admin', 'lead-guide'), deleteTour);
 
 export default router;

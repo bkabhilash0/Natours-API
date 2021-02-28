@@ -1,4 +1,5 @@
 import express from 'express';
+import moment from 'moment';
 import path from 'path';
 import AppError from './utils/AppError';
 import globalErrorHandler from './controllers/errorController';
@@ -6,12 +7,14 @@ import tourRouter from './routes/tourRoutes';
 import userRouter from './routes/userRoutes';
 import morgan from 'morgan';
 
+const time = moment().format('Do MMMM YYYY - HH:mm:ss');
+console.log(time);
 const app = express();
 const STATIC_URL = path.join(__dirname, 'public');
 
 // * Middlewares
 app.use((req, _res, next) => {
-    req.requestTime = new Date().toISOString();
+    req.requestTime = moment().format('Do MMMM YYYY - HH:mm:ss');
     next();
 });
 
