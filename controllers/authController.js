@@ -170,20 +170,45 @@ const resetPassword = catchAsync(async (req, res, next) => {
     if (!user) {
         return next(new AppError('Token is Invalid or Has Expired', 400));
     }
+
     // * 2. Set the New Password if token hasn't expired.
     user.password = req.body.password;
     user.passwordConfirm = req.body.passwordConfirm;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
+
     // * 3. Update the Changed Password.
     await user.save();
     const token = signUpToken(user._id);
-    // * 4. Log the User In
 
+    // * 4. Log the User In
     res.status(200).json({
         status: 'success',
         token,
     });
 });
 
-export { signUp, login, auth, restrictTo, forgetPassword, resetPassword };
+const updatePassword = catchAsync(async (req, res, next) => {
+    // * 1. Get the User from the DB.
+    const user = await User.findOne({ _id: req.user._id }).select('+password');
+
+    // * 2. Check if the Current Password entered by the User matches.
+    if (!await user.checkPassword(req.body.passwordCurrent, user.password)) {
+        return next(
+            new AppError('The Current Password you entered is invalid', 401)
+        );
+    }
+    // * 3. Now Update the Password and Save it to the DB.
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    // ? We use save rather than findByIDandUpdate coz only save and create triggers the middleware & Validators.
+    await user.save();
+
+    // * 4. Login the User and sent back the token.
+    res.status(200).json({
+        status: 'success',
+        token: signUpToken(user._id),
+    });
+});
+
+export { signUp, login, auth, restrictTo, forgetPassword, resetPassword, updatePassword };
