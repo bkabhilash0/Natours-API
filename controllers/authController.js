@@ -10,6 +10,26 @@ const signUpToken = (id) => {
     return jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: '90d' });
 };
 
+const createSendToken = (user, statusCode, res) => {
+    const token = signUpToken(user._id);
+    const cookieOptions = {
+        expires: new Date(
+            Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true,
+    };
+    if (process.env.NODE_ENV === 'production') {
+        cookieOptions.secure = true;
+    }
+    res.cookie('jwt', token, cookieOptions);
+    user.password = undefined;
+    res.status(statusCode).json({
+        status: 'success',
+        token,
+        data: { user },
+    });
+};
+
 const signUp = catchAsync(async (req, res, next) => {
     const {
         name,
@@ -29,15 +49,7 @@ const signUp = catchAsync(async (req, res, next) => {
     };
     const newUser = await User.create(userData);
 
-    const token = signUpToken(newUser._id);
-
-    res.status(201).json({
-        status: 'success',
-        token,
-        data: {
-            user: newUser,
-        },
-    });
+    createSendToken(newUser, 201, res);
 });
 
 const login = catchAsync(async (req, res, next) => {
@@ -51,10 +63,8 @@ const login = catchAsync(async (req, res, next) => {
             new AppError('The email or the Password is incorrect!', 401)
         );
     }
-    res.status(200).json({
-        status: 'success',
-        token: signUpToken(user._id),
-    });
+
+    createSendToken(user, 200, res);
 });
 
 const auth = catchAsync(async (req, res, next) => {
@@ -182,10 +192,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
     const token = signUpToken(user._id);
 
     // * 4. Log the User In
-    res.status(200).json({
-        status: 'success',
-        token,
-    });
+    createSendToken(user, 200, res);
 });
 
 const updatePassword = catchAsync(async (req, res, next) => {
@@ -193,7 +200,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
     const user = await User.findOne({ _id: req.user._id }).select('+password');
 
     // * 2. Check if the Current Password entered by the User matches.
-    if (!await user.checkPassword(req.body.passwordCurrent, user.password)) {
+    if (!(await user.checkPassword(req.body.passwordCurrent, user.password))) {
         return next(
             new AppError('The Current Password you entered is invalid', 401)
         );
@@ -205,10 +212,15 @@ const updatePassword = catchAsync(async (req, res, next) => {
     await user.save();
 
     // * 4. Login the User and sent back the token.
-    res.status(200).json({
-        status: 'success',
-        token: signUpToken(user._id),
-    });
+    createSendToken(user, 200, res);
 });
 
-export { signUp, login, auth, restrictTo, forgetPassword, resetPassword, updatePassword };
+export {
+    signUp,
+    login,
+    auth,
+    restrictTo,
+    forgetPassword,
+    resetPassword,
+    updatePassword,
+};

@@ -1,4 +1,9 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import mongoSanitizer from 'express-mongo-sanitize';
+import xss from 'xss-clean';
+import hpp from 'hpp';
 import moment from 'moment';
 import path from 'path';
 import AppError from './utils/AppError';
@@ -18,10 +23,35 @@ app.use((req, _res, next) => {
     next();
 });
 
+// * Global Middlewares.
+app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
-app.use(express.json());
+// ? 100 Requests from same IP for an Hour.
+const limiter = rateLimit({
+    max: 100,
+    windowMs: 60 * 60 * 1000,
+    message: 'Too many requests from this IP! Please try again after an hour.',
+});
+app.use('/api', limiter);
+app.use(express.json({ limit: '10kb' }));
+
+// * Data-Sanitization against NoSQL Injection and XSS.
+app.use(mongoSanitizer());
+app.use(xss());
+app.use(
+    hpp({
+        whitelist: [
+            'duration',
+            'ratingsAverage',
+            'ratingsQuantity',
+            'maxGroupSize',
+            'difficulty',
+            'price',
+        ],
+    })
+);
 app.use(express.static(STATIC_URL));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
