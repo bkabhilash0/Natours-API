@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
+import User from './userModel';
 
 const tourSchema = new mongoose.Schema(
     {
@@ -46,7 +47,8 @@ const tourSchema = new mongoose.Schema(
                 validator: function (value) {
                     return value < this.price;
                 },
-                message: 'Discount price ({VALUE}) should be below the regular price.'
+                message:
+                    'Discount price ({VALUE}) should be below the regular price.',
             },
         },
         summary: {
@@ -68,6 +70,32 @@ const tourSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        startLocation: {
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point'],
+            },
+            coordinates: [Number],
+            address: String,
+            description: String,
+        },
+        locations: [
+            {
+                type: {
+                    type: String,
+                    default: 'Point',
+                    enum: ['Point'],
+                },
+                coordinates: [Number],
+                address: String,
+                description: String,
+                day: Number
+            },
+        ],
+        guides:{
+
+        }
     },
     {
         timestamps: true,
@@ -84,6 +112,13 @@ tourSchema.pre('save', function (next) {
     this.slug = slugify(this.name, { lower: true });
     next();
 });
+
+tourSchema.pre('save', async function (next){
+    const tour = this;
+    const guidesPromises = tour.guides.map(async (id) => await User.findById(id))
+    tour.guides = await Promise.all(guidesPromises);
+    next();
+})
 
 // * Query Middleware - this keyword points to the current query. Note: Works only for save and create.
 tourSchema.pre(/^find/, function (next) {

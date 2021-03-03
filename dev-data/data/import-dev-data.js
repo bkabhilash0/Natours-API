@@ -7,7 +7,7 @@ import config from 'dotenv';
 config.config({ path: './config.env' });
 
 const tours = JSON.parse(
-    fs.readFileSync(path.join(__dirname, './tours-simple.json'), 'utf-8')
+    fs.readFileSync(path.join(__dirname, './tours.json'), 'utf-8')
 );
 const DB = process.env.DATABASE_LOCAL;
 
