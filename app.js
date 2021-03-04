@@ -10,6 +10,7 @@ import AppError from './utils/AppError';
 import globalErrorHandler from './controllers/errorController';
 import tourRouter from './routes/tourRoutes';
 import userRouter from './routes/userRoutes';
+import reviewRouter from './routes/reviewRoutes';
 import morgan from 'morgan';
 
 const time = moment().format('Do MMMM YYYY - HH:mm:ss');
@@ -55,6 +56,7 @@ app.use(
 app.use(express.static(STATIC_URL));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 // * 404 Middleware
 app.all('*', (req, res, next) => {
