@@ -90,12 +90,15 @@ const tourSchema = new mongoose.Schema(
                 coordinates: [Number],
                 address: String,
                 description: String,
-                day: Number
+                day: Number,
             },
         ],
-        guides:{
-
-        }
+        guides: [
+            {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User',
+            },
+        ],
     },
     {
         timestamps: true,
@@ -113,12 +116,23 @@ tourSchema.pre('save', function (next) {
     next();
 });
 
-tourSchema.pre('save', async function (next){
-    const tour = this;
-    const guidesPromises = tour.guides.map(async (id) => await User.findById(id))
-    tour.guides = await Promise.all(guidesPromises);
+tourSchema.pre(/^find/, function (next) {
+    const query = this;
+    query.populate({
+        path: 'guides',
+        select: '-__v -passwordChangedAt',
+    });
     next();
-})
+});
+
+// tourSchema.pre('save', async function (next) {
+//     const tour = this;
+//     const guidesPromises = tour.guides.map(
+//         async (id) => await User.findById(id)
+//     );
+//     tour.guides = await Promise.all(guidesPromises);
+//     next();
+// });
 
 // * Query Middleware - this keyword points to the current query. Note: Works only for save and create.
 tourSchema.pre(/^find/, function (next) {
