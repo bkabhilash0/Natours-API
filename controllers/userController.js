@@ -1,6 +1,7 @@
 import User from '../models/userModel';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/AppError';
+import { deleteOne, updateOne } from './handlerFactory';
 
 const filterObj = (obj, ...allowed) => {
     const newObj = {};
@@ -47,6 +48,7 @@ const updateMe = catchAsync(async (req, res, next) => {
     });
 });
 
+// * Deactivate an User.
 const deleteMe = catchAsync(async (req, res, next) => {
     await User.findByIdAndUpdate(req.user._id, { active: false });
     res.status(204).json({
@@ -69,19 +71,9 @@ const createUser = (req, res) => {
     });
 };
 
-const updateUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined!',
-    });
-};
-
-const deleteUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined!',
-    });
-};
+// * Do not use this to Update Passwords.
+const updateUser = updateOne(User);
+const deleteUser = deleteOne(User);
 
 export {
     createUser,

@@ -6,7 +6,7 @@ import {
     getAllUsers,
     deleteUser,
     updateMe,
-    deleteMe
+    deleteMe,
 } from '../controllers/userController';
 import {
     auth,
@@ -15,6 +15,7 @@ import {
     forgetPassword,
     resetPassword,
     updatePassword,
+    myProfile
 } from '../controllers/authController';
 
 const router = new express.Router();
@@ -23,6 +24,7 @@ router.post('/signup', signUp);
 router.post('/login', login);
 router.post('/forgetPassword', forgetPassword);
 router.post('/resetPassword/:token', resetPassword);
+router.get('/myProfile', auth, myProfile);
 router.patch('/updateMyPassword', auth, updatePassword);
 router.patch('/updateMe', auth, updateMe);
 router.delete('/deleteMe', auth, deleteMe);

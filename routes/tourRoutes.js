@@ -1,5 +1,6 @@
 import express from 'express';
 import { auth, restrictTo } from '../controllers/authController';
+import reviewRouter from './reviewRoutes';
 import {
     createTour,
     getAllTours,
@@ -12,6 +13,9 @@ import {
 } from '../controllers/tourController';
 
 const router = new express.Router();
+
+// * Nested Routes. - /tours/id/reviews
+router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/top-5-cheap').get(aliasTours, getAllTours);
 router.route('/tour-stats').get(getToursData);

@@ -215,6 +215,15 @@ const updatePassword = catchAsync(async (req, res, next) => {
     createSendToken(user, 200, res);
 });
 
+const myProfile = catchAsync(async (req, res, next) => {
+    res.status(200).json({
+        status: 'success',
+        data: {
+            user: req.user,
+        },
+    });
+});
+
 export {
     signUp,
     login,
@@ -223,4 +232,5 @@ export {
     forgetPassword,
     resetPassword,
     updatePassword,
+    myProfile
 };
