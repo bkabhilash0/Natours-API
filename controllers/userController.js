@@ -1,7 +1,7 @@
 import User from '../models/userModel';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/AppError';
-import { deleteOne, updateOne } from './handlerFactory';
+import { deleteOne, getAll, getOne, updateOne } from './handlerFactory';
 
 const filterObj = (obj, ...allowed) => {
     const newObj = {};
@@ -12,19 +12,6 @@ const filterObj = (obj, ...allowed) => {
     });
     return newObj;
 };
-
-const getAllUsers = catchAsync(async (req, res, next) => {
-    const query = User.find();
-    const users = await query;
-    res.status(200).json({
-        status: 'success',
-        requestedAt: req.requestTime,
-        length: users.length,
-        data: {
-            users,
-        },
-    });
-});
 
 const updateMe = catchAsync(async (req, res, next) => {
     // * 1. Throw Error if user posts Password Data.
@@ -57,20 +44,20 @@ const deleteMe = catchAsync(async (req, res, next) => {
     });
 });
 
-const getUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined!',
-    });
-};
-
 const createUser = (req, res) => {
     res.status(500).json({
         status: 'error',
-        message: 'This route is not yet defined!',
+        message: 'This route is not yet defined! Please use Signup Instead.',
     });
 };
 
+const getMe = (req, res, next) => {
+    req.params.id = req.user._id;
+    next();
+};
+
+const getAllUsers = getAll(User);
+const getUser = getOne(User);
 // * Do not use this to Update Passwords.
 const updateUser = updateOne(User);
 const deleteUser = deleteOne(User);
@@ -83,4 +70,5 @@ export {
     deleteUser,
     updateMe,
     deleteMe,
+    getMe,
 };

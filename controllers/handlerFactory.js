@@ -1,3 +1,4 @@
+import APIFeatures from '../utils/ApiFeatures';
 import AppError from '../utils/AppError';
 import catchAsync from '../utils/catchAsync';
 
@@ -41,4 +42,45 @@ const createOne = (Model) =>
         });
     });
 
-export { deleteOne, updateOne, createOne };
+const getOne = (Model, populateOptions) =>
+    catchAsync(async (req, res, next) => {
+        const query = Model.findById(req.params.id);
+        if (populateOptions) {
+            query.populate(populateOptions);
+        }
+        const doc = await query;
+        if (!doc) {
+            return next(new AppError('No doc found with that ID', 404));
+        }
+        res.status(200).json({
+            status: 'success',
+            data: {
+                data: doc,
+            },
+        });
+    });
+
+const getAll = (Model) =>
+    catchAsync(async (req, res, next) => {
+        // * To allow Nested Routed for Tour Reviews.
+        let filter = {};
+        if (req.params.tourId) filter = { tour: req.params.tourId };
+        const features = new APIFeatures(Model.find(), req.query)
+            .filter()
+            .sort()
+            .limitFields()
+            .paginate();
+        // const docs = await features.query.explain();
+        const docs = await features.query;
+
+        res.status(200).json({
+            status: 'success',
+            requestedAt: req.requestTime,
+            results: docs.length,
+            data: {
+                data: docs,
+            },
+        });
+    });
+
+export { deleteOne, updateOne, createOne, getOne, getAll };
