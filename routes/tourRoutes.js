@@ -10,6 +10,8 @@ import {
     aliasTours,
     getToursData,
     getMonthlyPlan,
+    getToursWithin,
+    getDistances,
 } from '../controllers/tourController';
 
 const router = new express.Router();
@@ -22,6 +24,10 @@ router.route('/tour-stats').get(getToursData);
 router
     .route('/monthly-plan/:year')
     .get(auth, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlan);
+router
+    .route('/tours-within/:distance/center/:latlong/unit/:unit')
+    .get(getToursWithin);
+router.route('/distances/:latlong/unit/:unit').get(getDistances);
 router
     .route('/')
     .get(getAllTours)

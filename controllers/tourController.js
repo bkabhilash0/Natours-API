@@ -1,13 +1,88 @@
 import Tour from '../models/tourModel';
-import { createOne, deleteOne, getAll, getOne, updateOne } from './handlerFactory';
+import {
+    createOne,
+    deleteOne,
+    getAll,
+    getOne,
+    updateOne,
+} from './handlerFactory';
 import catchAsync from '../utils/catchAsync';
-
+import AppError from '../utils/AppError';
 
 const getAllTours = getAll(Tour);
 const getSingleTour = getOne(Tour, { path: 'reviews' });
 const createTour = createOne(Tour);
 const updateTour = updateOne(Tour);
 const deleteTour = deleteOne(Tour);
+
+//* '/tours-within/:distance/center/:lat,long/unit/:unit'
+const getToursWithin = catchAsync(async (req, res, next) => {
+    const { distance, latlong, unit } = req.params;
+    const [lat, long] = latlong.split(',');
+    if (!lat || !long) {
+        return next(
+            new AppError(
+                'Please provide the lat and long in the formate lat,long',
+                400
+            )
+        );
+    }
+    const radius = unit == 'mi' ? distance / 3963.2 : distance / 6378.1; // * Conver the distance to radiants.
+    console.log(distance, lat, long, unit, radius);
+    const filter = {
+        startLocation: {
+            $geoWithin: {
+                $centerSphere: [[long, lat], radius],
+            },
+        },
+    };
+    const tours = await Tour.find(filter);
+    res.status(200).json({
+        status: 'success',
+        results: tours.length,
+        data: {
+            data: tours,
+        },
+    });
+});
+
+const getDistances = catchAsync(async (req, res, next) => {
+    const { latlong, unit } = req.params;
+    const [lat, long] = latlong.split(',');
+    if (!lat || !long) {
+        return next(
+            new AppError(
+                'Please provide the lat and long in the formate lat,long',
+                400
+            )
+        );
+    }
+    const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+    const distances = await Tour.aggregate([
+        {
+            $geoNear: {
+                near: {
+                    type: 'Point',
+                    coordinates: [long * 1, lat * 1],
+                },
+                distanceField: 'distance',
+                distanceMultiplier: multiplier,
+            },
+        },
+        {
+            $project: {
+                distance: 1,
+                name: 1,
+            },
+        },
+    ]);
+    res.status(200).json({
+        status: 'success',
+        data: {
+            data: distances,
+        },
+    });
+});
 
 const aliasTours = (req, res, next) => {
     req.query.limit = '5';
@@ -98,4 +173,6 @@ export {
     aliasTours,
     getToursData,
     getMonthlyPlan,
+    getToursWithin,
+    getDistances,
 };
