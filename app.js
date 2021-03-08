@@ -10,12 +10,15 @@ import AppError from './utils/AppError';
 import globalErrorHandler from './controllers/errorController';
 import tourRouter from './routes/tourRoutes';
 import userRouter from './routes/userRoutes';
+import viewsRouter from './routes/viewRoutes';
 import reviewRouter from './routes/reviewRoutes';
 import morgan from 'morgan';
 
 const time = moment().format('Do MMMM YYYY - HH:mm:ss');
 console.log(time);
 const app = express();
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 const STATIC_URL = path.join(__dirname, 'public');
 
 // * Middlewares
@@ -54,6 +57,7 @@ app.use(
     })
 );
 app.use(express.static(STATIC_URL));
+app.use('/',viewsRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
