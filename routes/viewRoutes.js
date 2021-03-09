@@ -4,6 +4,6 @@ import { getOverview, getTour } from '../controllers/viewsController';
 const router = new express.Router();
 
 router.get('/', getOverview);
-router.get('/tour', getTour);
+router.get('/tours/:slug', getTour);
 
 export default router;
