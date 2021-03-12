@@ -28,7 +28,12 @@ app.use((req, _res, next) => {
 });
 
 // * Global Middlewares.
-app.use(helmet());
+// app.use(helmet());
+app.use(
+    helmet({
+        contentSecurityPolicy: false,
+    })
+);
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
@@ -57,7 +62,7 @@ app.use(
     })
 );
 app.use(express.static(STATIC_URL));
-app.use('/',viewsRouter);
+app.use('/', viewsRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
