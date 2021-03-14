@@ -3,6 +3,7 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import mongoSanitizer from 'express-mongo-sanitize';
 import xss from 'xss-clean';
+import cookieparser from 'cookie-parser';
 import hpp from 'hpp';
 import moment from 'moment';
 import path from 'path';
@@ -20,10 +21,11 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 const STATIC_URL = path.join(__dirname, 'public');
-
+// app.use(cookieparser);
 // * Middlewares
 app.use((req, _res, next) => {
     req.requestTime = moment().format('Do MMMM YYYY - HH:mm:ss');
+    // console.log(req.cookies);
     next();
 });
 
@@ -45,6 +47,7 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 app.use(express.json({ limit: '10kb' }));
+// app.use(cookieparser);
 
 // * Data-Sanitization against NoSQL Injection and XSS.
 app.use(mongoSanitizer());

@@ -16,6 +16,7 @@
     "license": "ISC",
     "dependencies": {
         "bcrypt": "^5.0.0",
+        "cookie-parser": "^1.4.5",
         "dotenv": "^8.2.0",
         "eslint": "^7.20.0",
         "eslint-config-airbnb": "^18.2.1",
