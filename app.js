@@ -25,7 +25,6 @@ const STATIC_URL = path.join(__dirname, 'public');
 // * Middlewares
 app.use((req, _res, next) => {
     req.requestTime = moment().format('Do MMMM YYYY - HH:mm:ss');
-    // console.log(req.cookies);
     next();
 });
 
@@ -47,7 +46,12 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 app.use(express.json({ limit: '10kb' }));
-// app.use(cookieparser);
+app.use(cookieparser());
+
+app.use((req, res, next) => {
+    console.log(req.cookies);
+    next();
+});
 
 // * Data-Sanitization against NoSQL Injection and XSS.
 app.use(mongoSanitizer());
