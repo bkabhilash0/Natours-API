@@ -1,3 +1,5 @@
 /node_modules
 /config.env
 /mongodb.js
+/public/js/bundle.js
+/public/js/bundle.js.map

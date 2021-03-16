@@ -10,7 +10,9 @@
         "import-db": "nodemon --exec babel-node dev-data/data/import-dev-data.js --import",
         "build": "babel app.js --out-file index-compiled.js",
         "start": "node index-compiled.js",
-        "debug": "ndb server.js"
+        "debug": "ndb server.js",
+        "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
+        "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
     },
     "author": "Abhilash BK",
     "license": "ISC",
@@ -49,6 +51,7 @@
         "@types/mapbox-gl": "^2.1.0",
         "ndb": "^1.1.5",
         "nodemon": "^2.0.7",
+        "parcel-bundler": "^1.12.5",
         "prettier": "^2.2.1"
     }
 }
