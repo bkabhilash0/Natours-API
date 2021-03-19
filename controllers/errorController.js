@@ -40,17 +40,32 @@ const sendErrorDev = (req, err, res) => {
 };
 
 const sendErrorProd = (req, err, res) => {
+    if (req.originalUrl.startsWith('api')) {
+        if (err.isOperational) {
+            return res.status(err.statusCode).json({
+                status: err.status,
+                message: err.message,
+            });
+        }
+        // * Programming Error - Not to be disclosed to the Client!
+        console.error('ERROR 😢', err);
+        return res.status(500).json({
+            status: 'error',
+            message: 'Something went wrong!',
+        });
+    }
+    // * For Rendered Website.
     if (err.isOperational) {
-        res.status(err.statusCode).json({
-            status: err.status,
+        res.status(err.statusCode).render('error', {
+            title: 'Something went Wrong',
             message: err.message,
         });
     } else {
         // * Programming Error - Not to be disclosed to the Client!
         console.error('ERROR 😢', err);
-        res.status(500).json({
-            status: 'error',
-            message: 'Something went wrong!',
+        res.status(err.statusCode).render('error', {
+            title: 'Something went Wrong',
+            message: 'Please Try Again Later',
         });
     }
 };
@@ -63,6 +78,7 @@ export default (err, req, res, next) => {
         sendErrorDev(req, err, res);
     } else if (process.env.NODE_ENV === 'production') {
         let error = { ...err };
+        error.message = err.message;
         if (err.name === 'CastError') {
             error = handleCastErrorDB(error);
         }
