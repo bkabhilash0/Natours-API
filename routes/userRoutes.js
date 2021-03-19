@@ -16,13 +16,15 @@ import {
     forgetPassword,
     resetPassword,
     updatePassword,
-    restrictTo
+    restrictTo,
+    logout,
 } from '../controllers/authController';
 
 const router = new express.Router();
 
 router.post('/signup', signUp);
 router.post('/login', login);
+router.get('/logout', logout);
 router.post('/forgetPassword', forgetPassword);
 router.post('/resetPassword/:token', resetPassword);
 

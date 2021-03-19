@@ -27,7 +27,7 @@ export const displayMap = (locations) => {
             .setLngLat(loc.coordinates)
             .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
             .addTo(map);
-        // Extend Mapbounds.
+        //* Extend Mapbounds.
         bounds.extend(loc.coordinates);
     });
     map.scrollZoom.disable();

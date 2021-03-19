@@ -67,6 +67,14 @@ const login = catchAsync(async (req, res, next) => {
     createSendToken(user, 200, res);
 });
 
+const logout = (req, res) => {
+    res.cookie('jwt', 'logged out', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true,
+    });
+    res.status(200).send({ status: 'success' });
+};
+
 const auth = catchAsync(async (req, res, next) => {
     let token;
     if (
@@ -112,38 +120,42 @@ const auth = catchAsync(async (req, res, next) => {
     next();
 });
 
-const isLoggedIn = catchAsync(async (req, res, next) => {
+const isLoggedIn = async (req, res, next) => {
     let token;
-    if (req.cookies.jwt) {
-        token = req.cookies.jwt;
-        // * 2. Verify the Token
-        const decoded = await promisify(jwt.verify)(
-            token,
-            process.env.SECRET_KEY
-        );
-
-        // * 3. Check if the User still exists.
-        const freshUser = await User.findById(decoded.id);
-        if (!freshUser) {
-            return next(
-                new AppError(
-                    'The user belonging to the token no longer exists!',
-                    401
-                )
+    try {
+        if (req.cookies.jwt) {
+            token = req.cookies.jwt;
+            // * 2. Verify the Token
+            const decoded = await promisify(jwt.verify)(
+                token,
+                process.env.SECRET_KEY
             );
-        }
 
-        // * 4. Check if User Changed the Password after issuing token.
-        if (freshUser.changedPasswordAfter(decoded.iat)) {
+            // * 3. Check if the User still exists.
+            const freshUser = await User.findById(decoded.id);
+            if (!freshUser) {
+                return next(
+                    new AppError(
+                        'The user belonging to the token no longer exists!',
+                        401
+                    )
+                );
+            }
+
+            // * 4. Check if User Changed the Password after issuing token.
+            if (freshUser.changedPasswordAfter(decoded.iat)) {
+                return next();
+            }
+
+            // * 5. Grant Access to the Protected Route - A user is Logged in.
+            res.locals.user = freshUser;
             return next();
         }
-
-        // * 5. Grant Access to the Protected Route.
-        res.locals.user = freshUser;
+    } catch (err) {
         return next();
     }
     next();
-});
+};
 
 const restrictTo = (...roles) => {
     return (req, res, next) => {
@@ -258,5 +270,6 @@ export {
     forgetPassword,
     resetPassword,
     updatePassword,
-    isLoggedIn
+    isLoggedIn,
+    logout,
 };
