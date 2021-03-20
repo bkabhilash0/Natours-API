@@ -117,6 +117,7 @@ const auth = catchAsync(async (req, res, next) => {
 
     // * 5. Grant Access to the Protected Route.
     req.user = freshUser;
+    res.locals.user = freshUser;
     next();
 });
 

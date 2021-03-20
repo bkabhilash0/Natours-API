@@ -24,7 +24,10 @@ export const logout = () => {
         .get('http://127.0.0.1:3000/api/v1/users/logout')
         .then((response) => {
             if (response.data.status == 'success') {
-                location.reload();
+                showAlerts('success', 'Logged Out Successfully!');
+                window.setTimeout(() => {
+                    location.assign('/');
+                }, 1500);
             }
         })
         .catch((error) => {
