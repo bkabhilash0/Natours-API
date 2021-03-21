@@ -8,6 +8,7 @@ import {
     updateMe,
     deleteMe,
     getMe,
+    uploadUserPhoto,
 } from '../controllers/userController';
 import {
     auth,
@@ -31,7 +32,7 @@ router.post('/resetPassword/:token', resetPassword);
 router.use(auth);
 router.get('/me', getMe, getUser);
 router.patch('/updateMyPassword', updatePassword);
-router.patch('/updateMe', updateMe);
+router.patch('/updateMe', uploadUserPhoto, updateMe);
 router.delete('/deleteMe', deleteMe);
 
 router.use(restrictTo('admin'));
