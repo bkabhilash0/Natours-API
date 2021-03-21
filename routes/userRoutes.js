@@ -9,6 +9,7 @@ import {
     deleteMe,
     getMe,
     uploadUserPhoto,
+    resizePhoto,
 } from '../controllers/userController';
 import {
     auth,
@@ -32,7 +33,7 @@ router.post('/resetPassword/:token', resetPassword);
 router.use(auth);
 router.get('/me', getMe, getUser);
 router.patch('/updateMyPassword', updatePassword);
-router.patch('/updateMe', uploadUserPhoto, updateMe);
+router.patch('/updateMe', uploadUserPhoto, resizePhoto, updateMe);
 router.delete('/deleteMe', deleteMe);
 
 router.use(restrictTo('admin'));
