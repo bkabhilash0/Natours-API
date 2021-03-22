@@ -30,11 +30,19 @@ if (logoutbtn) {
 }
 
 if (userDataForm) {
+    document.getElementById('photo').addEventListener('change', (e) => {
+        const file = e.target.files;
+        console.log(file[0].name);
+        document.getElementById('photo--label').textContent = file[0].name;
+    });
     userDataForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        updateSettings({ name, email }, 'data');
+        const form = new FormData();
+        form.append('name', document.getElementById('name').value);
+        form.append('email', document.getElementById('email').value);
+        form.append('photo', document.getElementById('photo').files[0]);
+        console.log(document.getElementById('photo').files[0]);
+        updateSettings(form, 'data');
     });
 }
 

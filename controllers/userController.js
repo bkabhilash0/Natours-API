@@ -117,5 +117,5 @@ export {
     deleteMe,
     getMe,
     uploadUserPhoto,
-    resizePhoto
+    resizePhoto,
 };

@@ -11,6 +11,9 @@ export const updateSettings = (data, type) => {
                     'success',
                     `${type.toUpperCase()} Updated Successfully!`
                 );
+                setTimeout(() => {
+                    window.location.reload(); 
+                }, 1500); 
             }
         })
         .catch((err) => {
