@@ -1,4 +1,6 @@
 import Tour from '../models/tourModel';
+import multer from 'multer';
+import sharp from 'sharp';
 import {
     createOne,
     deleteOne,
@@ -8,6 +10,20 @@ import {
 } from './handlerFactory';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/AppError';
+
+const multerStorage = multer.memoryStorage();
+const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) {
+        cb(null, true);
+    } else {
+        cb(
+            new AppError('Not an Image! Please Upload a Valid Image', 400),
+            false
+        );
+    }
+};
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
 
 const getAllTours = getAll(Tour);
 const getSingleTour = getOne(Tour, { path: 'reviews' });
