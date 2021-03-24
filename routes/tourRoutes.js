@@ -12,6 +12,8 @@ import {
     getMonthlyPlan,
     getToursWithin,
     getDistances,
+    uploadTourImages,
+    resizeTourImages,
 } from '../controllers/tourController';
 
 const router = new express.Router();
@@ -35,7 +37,13 @@ router
 router
     .route('/:id')
     .get(getSingleTour)
-    .patch(auth, restrictTo('admin', 'lead-guide'), updateTour)
+    .patch(
+        auth,
+        restrictTo('admin', 'lead-guide'),
+        uploadTourImages,
+        resizeTourImages,
+        updateTour
+    )
     .delete(auth, restrictTo('admin', 'lead-guide'), deleteTour);
 
 export default router;

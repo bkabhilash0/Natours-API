@@ -24,6 +24,21 @@ const multerFilter = (req, file, cb) => {
 };
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 
+const uploadTourImages = upload.fields([
+    {
+        name: 'imageCover',
+        maxCount: 1,
+    },
+    {
+        name: 'images',
+        maxCount: 3,
+    },
+]);
+
+const resizeTourImages = (req, res, next) => {
+    console.log(req.files);
+    next();
+};
 
 const getAllTours = getAll(Tour);
 const getSingleTour = getOne(Tour, { path: 'reviews' });
@@ -191,4 +206,6 @@ export {
     getMonthlyPlan,
     getToursWithin,
     getDistances,
+    uploadTourImages,
+    resizeTourImages,
 };
