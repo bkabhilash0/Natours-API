@@ -1,11 +1,14 @@
 // import '@babel/polyfill';
-import { login, logout } from './login';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+import { login, logout, signup } from './login';
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 
 // * Creating some DOM elements to check if its available.
 const mapbox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
+const signupForm = document.querySelector('.form--signup');
 const logoutbtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
@@ -22,6 +25,21 @@ if (loginForm) {
         const password = document.getElementById('password').value;
         e.preventDefault();
         login(email, password);
+    });
+}
+
+if (signupForm) {
+    signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const passwordConfirm = document.getElementById('passwordConfirm')
+            .value;
+        const data = { name, email, password, passwordConfirm };
+        document.getElementById('signUp-Text').textContent = 'Signing Up...';
+        await signup(data);
+        document.getElementById('signUp-Text').textContent = 'Sign Up';
     });
 }
 

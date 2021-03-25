@@ -2,7 +2,7 @@ import User from '../models/userModel';
 import jwt from 'jsonwebtoken';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/AppError';
-import sendEmail from '../utils/email';
+import Email from '../utils/email';
 import { promisify } from 'util';
 import crypto from 'crypto';
 
@@ -48,6 +48,8 @@ const signUp = catchAsync(async (req, res, next) => {
         role,
     };
     const newUser = await User.create(userData);
+    const url = `${req.protocol}://${req.get('host')}/me`;
+    await new Email(newUser, url).sendWelcome();
 
     createSendToken(newUser, 201, res);
 });
@@ -191,11 +193,11 @@ const forgetPassword = catchAsync(async (req, res, next) => {
 
     const message = `Click this link ${resetURL} to reset your Password.`;
     try {
-        await sendEmail({
-            to: user.email,
-            subject: 'Password Reset',
-            message,
-        });
+        // await sendEmail({
+        //     to: user.email,
+        //     subject: 'Password Reset',
+        //     message,
+        // });
 
         res.status(200).json({
             status: 'success',

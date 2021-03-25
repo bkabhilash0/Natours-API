@@ -5,6 +5,7 @@ import {
     getTour,
     login,
     me,
+    signup,
     updateUserData,
 } from '../controllers/viewsController';
 
@@ -15,5 +16,6 @@ router.get('/login', isLoggedIn, login);
 router.get('/tours/:slug', isLoggedIn, getTour);
 router.get('/me', auth, me);
 router.post('/submit-user-data', auth, updateUserData);
+router.get('/signup', signup);
 
 export default router;

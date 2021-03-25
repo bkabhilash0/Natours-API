@@ -1,12 +1,9 @@
 extends base
 
-block append head
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous")
-
 block content 
     main.main
         .login-form
-            h2.heading-secondary.ma-bt-lg Log into your account
+            h2.heading-secondary.ma-bt-lg Create Your Account!
             form.form.form--login
                 .form__group
                     label.form__label(for='email') Email address
@@ -15,7 +12,4 @@ block content
                     label.form__label(for='password') Password
                     input#password.form__input(type='password', placeholder='••••••••', required, minlength='8')
                 .form__group
-                    button.btn.btn--green Login
-
-
-    script(src='/js/login.js')  
+                    button.btn.btn--green(id="login-text") Login

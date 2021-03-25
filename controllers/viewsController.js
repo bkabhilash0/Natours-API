@@ -59,4 +59,7 @@ const updateUserData = catchAsync(async (req, res, next) => {
     });
 });
 
-export { getOverview, getTour, login, me, updateUserData };
+const signup = catchAsync(async (req, res, next) => {
+    res.status(200).render('signup');
+});
+export { getOverview, getTour, login, me, updateUserData, signup };
