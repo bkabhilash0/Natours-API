@@ -32,7 +32,7 @@ class Email {
             `${__dirname}/../views/emails/${template}.pug`,
             {
                 firstName: this.firstName,
-                url = this.url,
+                url: this.url,
                 subject
             }
         );
