@@ -13,6 +13,7 @@ import tourRouter from './routes/tourRoutes';
 import userRouter from './routes/userRoutes';
 import viewsRouter from './routes/viewRoutes';
 import reviewRouter from './routes/reviewRoutes';
+import bookingRouter from './routes/bookingRoutes';
 import morgan from 'morgan';
 
 const time = moment().format('Do MMMM YYYY - HH:mm:ss');
@@ -74,6 +75,7 @@ app.use('/', viewsRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 // * 404 Middleware
 app.all('*', (req, res, next) => {

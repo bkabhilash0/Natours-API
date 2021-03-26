@@ -191,14 +191,8 @@ const forgetPassword = catchAsync(async (req, res, next) => {
         'host'
     )}/api/v1/users/resetPassword/${resetToken}`;
 
-    const message = `Click this link ${resetURL} to reset your Password.`;
     try {
-        // await sendEmail({
-        //     to: user.email,
-        //     subject: 'Password Reset',
-        //     message,
-        // });
-
+        await new Email(user, resetURL).sendPasswordReset();
         res.status(200).json({
             status: 'success',
             message: 'Token sent to Email',
