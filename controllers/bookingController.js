@@ -19,25 +19,16 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
         cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
         customer_email: req.user.email,
         client_reference_id: req.params.tourId,
-        mode: 'payment',
         line_items: [
-            // {
-            //     name: `${tour.name} Tour`,
-            //     description: `${tour.summary}`,
-            //     amount: tour.price * 100,
-            //     currency: 'INR',
-            //     quantity: 1,
-            // },
             {
-                price_data: {
-                    currency: 'usd',
-                    product_data: {
-                        name: 'Stubborn Attachments',
-                        images: ['https://i.imgur.com/EHyR2nP.png'],
-                    },
-                    unit_amount: 2000,
-                },
+                name: `${tour.name} Tour`,
+                description: `${tour.summary}`,
+                amount: tour.price * 100,
+                currency: 'INR',
                 quantity: 1,
+                images: [
+                    `https://www.natours.dev/img/tours/${tour.imageCover}`,
+                ],
             },
         ],
     });
