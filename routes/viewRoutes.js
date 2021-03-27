@@ -1,6 +1,8 @@
 import express from 'express';
 import { auth, isLoggedIn } from '../controllers/authController';
+import { createBookingCheckout } from '../controllers/bookingController';
 import {
+    getMyTours,
     getOverview,
     getTour,
     login,
@@ -11,7 +13,8 @@ import {
 
 const router = new express.Router();
 
-router.get('/', isLoggedIn, getOverview);
+router.get('/', createBookingCheckout, isLoggedIn, getOverview);
+router.get('/my-tours', auth, getMyTours);
 router.get('/login', isLoggedIn, login);
 router.get('/tours/:slug', isLoggedIn, getTour);
 router.get('/me', auth, me);

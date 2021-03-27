@@ -4,6 +4,7 @@ import 'regenerator-runtime/runtime';
 import { login, logout, signup } from './login';
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
+import { bookTour } from './stripe';
 
 // * Creating some DOM elements to check if its available.
 const mapbox = document.getElementById('map');
@@ -12,6 +13,7 @@ const signupForm = document.querySelector('.form--signup');
 const logoutbtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const bookbtn = document.getElementById('book-tour');
 
 console.log('Hello From Client!');
 if (mapbox) {
@@ -85,5 +87,14 @@ if (userPasswordForm) {
         document.getElementById('password-current').value = '';
         document.getElementById('password').value = '';
         document.getElementById('password-confirm').value = '';
+    });
+
+}
+
+if (bookbtn) {
+    bookbtn.addEventListener('click', async (e) => {
+        e.target.textContent = "Processing..."
+        const { tourId } = e.target.dataset;
+        await bookTour(tourId);
     });
 }

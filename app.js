@@ -17,7 +17,6 @@ import bookingRouter from './routes/bookingRoutes';
 import morgan from 'morgan';
 
 const time = moment().format('Do MMMM YYYY - HH:mm:ss');
-console.log(time);
 const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
